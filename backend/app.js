@@ -1,7 +1,6 @@
 const express = require("express");
 const multer = require("multer");
 const path = require("path");
-const axios = require("axios");
 const fs = require('fs');
 
 const app = express();
@@ -18,11 +17,12 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
   
 
-app.post("/upload", upload.single("file"), (req, res) => {
+app.post("/upload", upload.single("file"), async (req, res) => {
     const filePath = path.join(__dirname, 'uploads', req.file.filename);
-    // console.log(req.files);
+
+    const blob = await fs.openAsBlob(filePath);
     const formData = new FormData();
-    formData.append('file', fs.createReadStream(filePath));
+    formData.append('file', blob, "name");
     fetch("https://server.simpletex.cn/api/latex_ocr", {
         method: "POST",
         headers: {
@@ -30,7 +30,7 @@ app.post("/upload", upload.single("file"), (req, res) => {
         },
         body: formData
     })
-    .then((res) => console.log(res))
+    .then(async(res) => console.log(await res.json()))
     .catch((err) => {console.log(err)});
     res.send(req.files);
 });
