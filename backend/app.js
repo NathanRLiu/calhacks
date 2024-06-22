@@ -30,9 +30,17 @@ app.post("/upload", upload.single("file"), async (req, res) => {
         },
         body: formData
     })
-    .then(async(res) => console.log(await res.json()))
-    .catch((err) => {console.log(err)});
-    res.send(req.files);
+    .then(async(results) => {
+        const result = await results.json();
+        console.log(result);
+        res.send(result);
+        return;
+    })
+    .catch((err) => {
+        console.log(err);
+        res.send({'error': "no good"});
+        return;
+    });
 });
 
 app.listen(8000);
