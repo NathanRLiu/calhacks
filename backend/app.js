@@ -7,7 +7,7 @@ var multipartMiddleware = multipart();
 const app = express();
 
 app.post("/upload", multipartMiddleware, (req, res) => {
-    axios.post("https://server.simpletex.cn/api/latex_ocr", req.files, {headers: {"token": "yJAfYlAvgWbtaw1MstE1c98neKLFZKUAmBRWB6RiWzNI6dpjheLhloOEESUyqv64"}})
+    fetch("https://server.simpletex.cn/api/latex_ocr", req.files, {headers: {"token": "yJAfYlAvgWbtaw1MstE1c98neKLFZKUAmBRWB6RiWzNI6dpjheLhloOEESUyqv64"}})
     .catch((err) => {console.log(err)});
 });
 
