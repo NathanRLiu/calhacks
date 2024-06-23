@@ -38,7 +38,7 @@ export default function Home() {
       <div className="absolute inset-0 h-full w-full bg-white bg-[linear-gradient(to_right,#96ade9d3_1px,transparent_1px),linear-gradient(to_bottom,#96ade9d3_1px,transparent_1px)] bg-[size:24px_24px] h-lvh w-lvw -z-10 fixed" />
       <main className="flex min-h-screen flex-col items-center p-24 pt-0 z-10 text-black backdrop-blur-[1px] bg-[#10101030]">
         <div className="bg-gray-100 mt-36 h-96 w-1/2 p-6 rounded-md flex-col">
-          <h1 className="text-gray-700 align-middle text-left font-semibold text-black text-3xl">{isStudent?"Student":"Teacher"} Login </h1>
+          <h1 className="text-gray-700 align-middle text-left font-semibold text-black text-3xl">{isStudent?"Student":"Teacher"} {hasAccount?"Login":"Registration"} </h1>
 
           <button className="ml-0.5 mt-0 text-sm text-blue-700 underline" onClick={()=>makeStudent(!isStudent)}>
             Not a {isStudent?"Student?":"Teacher?"}
