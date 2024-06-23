@@ -51,7 +51,7 @@ export default function Home() {
                     </thead>
                     <tbody>
                       {
-                        (assignments.map((submission, index) =>{
+                        (assignments.map((submission, index) => (
                           <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                               <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                                 {submission.latest_submission_id}
@@ -63,14 +63,14 @@ export default function Home() {
                                 {submission.correct?"100%":"70%"}
                               </td>
                               <td class="px-6 py-4">
-                                  Yes
+                                {submission.created_at}
                               </td>
                               <td class="flex items-center px-6 py-4">
                                   <a href="#" class="font-medium text-center text-cyan-500 dark:text-blue-500 hover:underline ms-3">Resubmit</a>
                               </td>
                           </tr>
-                        }
-                        ))}
+                        )))
+                      }
                     </tbody>
                 </table>
             </div>

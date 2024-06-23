@@ -11,7 +11,7 @@ export default function Home() {
 
   useEffect(() => {
     const checkLogin = async() => {
-      const url = "http://localhost:8000/login";
+      const url = "http://localhost:3000/api/login";
       const response = await fetch(url, {method: "GET", credentials: "include"});
       const res = await response.json();
       if ("userID" in res) window.location.href = "/student/dashboard";
@@ -21,7 +21,7 @@ export default function Home() {
 
   const handleSubmit = async(e) => {
     e.preventDefault();
-    const url = "http://localhost:8000" + (hasAccount ? '/login' : '/signup');
+    const url = "http://localhost:3000/api" + (hasAccount ? '/login' : '/signup');
     const response = await fetch(url, {
       method: "POST",
       headers: {"Content-Type": "application/json"},
