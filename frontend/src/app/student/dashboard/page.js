@@ -13,6 +13,7 @@ export default function Home() {
       "correct":true,
       "student_name":"Nate",
       "assignment_title":"Hw #1",
+      "assignment_id":"39ff9ed116c3"
     },
     {
       "latest_submission_id":"93ffc3ee83ba",
@@ -21,10 +22,39 @@ export default function Home() {
       "correct":false,
       "student_name":"Nate",
       "assignment_title":"Hw #2",
+      "assignment_id":"93ffc3ee83ba"
     } 
   ])
+  const [trynaUpload, meUpload] = useState(false);
+  const [assignmentInQuestion, theAssignmentInQuesstionIs] = useState("");
   return (
     <>
+      {
+        trynaUpload && 
+          <div className="w-full h-full fixed z-20 flex flex-col justify-center pointer-events-none">
+            <div className="bg-white p-6 text-center w-1/3 m-auto rounded-md pointer-events-auto">
+
+              <div class="flex items-center justify-center w-full">
+                  <label for="dropzone-file" class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
+                      <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                          <svg class="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
+                              <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
+                          </svg>
+                          <p class="mb-2 text-sm text-gray-500 dark:text-gray-400"><span class="font-semibold">Click to upload</span> or drag and drop</p>
+                          <p class="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
+                      </div>
+                      <input id="dropzone-file" type="file" class="hidden" />
+                  </label>
+              </div> 
+
+            </div>
+          </div>
+      }
+      {
+        trynaUpload && 
+        <div className="w-screen h-screen backdrop-blur-[2px] bg-[#10101033] z-10 fixed " onClick={()=>{meUpload(false)}}>
+        </div>
+      }
       <div className="bg-gradient-to-b w-screen -z-10 h-screen fixed from-gray-300 to-gray-200" />
       <main className=" p-24 z-10 text-black w-screen h-screen flex flex-col items-center">
         <div className="bg-gray-100 absolute w-5/6 h-2/3 p-6 px-0 rounded-md ">
@@ -33,19 +63,17 @@ export default function Home() {
                 <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                     <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                         <tr>
-                            <th scope="col" class="px-6 py-3">
-                              Submission ID
-                            </th>
-                            <th scope="col" class="px-6 py-3">
+                            <th scope="col" class="px-6 py-4">
                               Assignment Title
                             </th>
-                            <th scope="col" class="px-6 py-3">
+                            <th scope="col" class="px-6 py-4">
                               Score
                             </th>
-                            <th scope="col" class="px-6 py-3">
+                            <th scope="col" class="px-6 py-4">
                               Submission Time
                             </th>
-                            <th scope="col" class="px-6 py-3">
+                            <th scope="col" class="px-6 py-4">
+                              Submission
                             </th>
                         </tr>
                     </thead>
@@ -54,11 +82,8 @@ export default function Home() {
                         (assignments.map((submission, index) => (
                           <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                               <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                {submission.latest_submission_id}
-                              </th>
-                              <td class="px-6 py-4">
                                 {submission.assignment_title}
-                              </td>
+                              </th>
                               <td class="px-6 py-4">
                                 {submission.correct?"100%":"70%"}
                               </td>
@@ -66,7 +91,10 @@ export default function Home() {
                                 {submission.created_at}
                               </td>
                               <td class="flex items-center px-6 py-4">
-                                  <a href="#" class="font-medium text-center text-cyan-500 dark:text-blue-500 hover:underline ms-3">Resubmit</a>
+                                  <a href="#" class="font-medium text-center text-cyan-500 dark:text-blue-500 hover:underline ms-3" onClick={()=>{
+                                    theAssignmentInQuesstionIs(submission.assignment_id);
+                                    meUpload(true);
+                                  }}>Submit</a>
                               </td>
                           </tr>
                         )))
