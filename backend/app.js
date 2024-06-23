@@ -8,6 +8,7 @@ const signupRoute = require("./routes/signup");
 const uploadRoute = require("./routes/upload");
 const submissionRoute = require('./routes/submissions');
 const assignmentRoute = require('./routes/assignments');
+const logoutRoute = require('./routes/logout');
 
 const app = express();
 app.use(session({
@@ -19,9 +20,8 @@ app.use(session({
 app.use(express.json());
 app.use(cors({credentials: true, origin: "http://localhost:3000"}));
 
-
-
 app.use("/login", loginRoute);
+app.use("/logout", logoutRoute);
 app.use("/signup", signupRoute);
 app.use("/upload", uploadRoute);
 app.use('/submissions', submissionRoute);

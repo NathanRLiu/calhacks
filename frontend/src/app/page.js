@@ -12,17 +12,26 @@ function sort_by_key(array, key)
   });
 }
 
-async function handleLogout() {
-  const logoutRes = await fetch("http://localhost:8000/logout", {method: "POST", credentials: "include"});
-  console.log(logoutRes);
-}
-
 const success_messages = ["Good work!", "Nice job.","Looks good!", "Looks correct. Keep it up!", "Looks great.", "Correct!", "You're on the right track!"]
 
 export default function Home() {
 
   const [isStudent, setStudent] = useState(false);
   const [isLoggedIn, setLoggedIn] = useState(false);
+
+  async function handleLogout() {
+    const logoutRes = await fetch("http://localhost:8000/logout", {method: "POST", // *GET, POST, PUT, DELETE, etc.
+      mode: "cors", // no-cors, *cors, same-origin
+      cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+      credentials: "include", // include, *same-origin, omit
+      headers: {
+        "Content-Type": "application/json",
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      redirect: "follow", // manual, *follow, error
+      referrerPolicy: "no-referrer"});
+      setLoggedIn(false);
+  }
 
   useEffect(() => {
     const checkLogin = async() => {
