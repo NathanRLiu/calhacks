@@ -12,6 +12,11 @@ function sort_by_key(array, key)
   });
 }
 
+async function handleLogout() {
+  const logoutRes = await fetch("http://localhost:8000/logout", {method: "POST", credentials: "include"});
+  console.log(logoutRes);
+}
+
 const success_messages = ["Good work!", "Nice job.","Looks good!", "Looks correct. Keep it up!", "Looks great.", "Correct!", "You're on the right track!"]
 
 export default function Home() {
@@ -106,10 +111,10 @@ export default function Home() {
     <>
       <nav>
         <div class="max-w-screen-xl flex flex-row-reverse flex-wrap items-center justify-between mx-auto p-1">
-          <ul class="font-medium flex-row-reverse flex-col p-1 mt-4">
-            { !isLoggedIn ? (<li><a href="/auth" class="block text-gray-900 hover:text-gray-500 bg-transparent">Login</a></li>):(<span></span>)}
-            { isStudent&&isLoggedIn ? (<li><a href="/student/dashboard" class="block text-gray-900 hover:text-gray-500 bg-transparent">Dashboard</a></li>):(<span></span>)}
-            { !isStudent&&isLoggedIn ? (<a href="/teacher/dashboard" class="block text-gray-900 hover:text-gray-500 bg-transparent">Dashboard</a>) : (<span></span>)}
+          <ul class="font-medium flex-row-reverse flex flex-wrap items-center justify-center p-1 mt-4">
+            { isStudent&&isLoggedIn ? (<li><a href="/student/dashboard" class="block text-gray-900 hover:text-gray-500 bg-transparent">Dashboard</a></li>):(<></>)}
+            { !isStudent&&isLoggedIn ? (<a href="/teacher/dashboard" class="block text-gray-900 hover:text-gray-500 bg-transparent">Dashboard</a>) : (<></>)}
+            { isLoggedIn ? (<li class="px-4"><button onClick={handleLogout} class="block text-gray-900 hover:text-gray-500 bg-transparent">Logout</button></li>):(<li><a href="/auth" class="block text-gray-900 hover:text-gray-500 bg-transparent">Login</a></li>)}
           </ul>
         </div>
       </nav>

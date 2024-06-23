@@ -3,7 +3,7 @@ const router = express.Router();
 
 router.post("/", (req, res) => {
     console.log(req.session);
-    req.session = null;
+    req.session.destroy();
     return res.send({message: "Logged out"});
 });
 
