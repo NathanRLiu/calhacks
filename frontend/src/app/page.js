@@ -4,6 +4,36 @@ import { useEffect, useState, useRef } from 'react'
 import { ReactSketchCanvas } from 'react-sketch-canvas';
 
 export default function Home() {
+
+  const [isStudent, setStudent] = useState(false);
+  const [isLoggedIn, setLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const checkLogin = async() => {
+      const url = "http://localhost:3000/api/login";
+      const response = await fetch(url, {method: "GET", credentials: "include"});
+      const res = await response.json();
+
+      if (res?.error === 'no user logged in') {
+        setLoggedIn(false);
+      }
+      else {
+        setLoggedIn(true);
+        if ("userID" in res){
+          setStudent(true);
+        }
+        else {
+          setStudent(false);
+        }
+      }
+    }
+    checkLogin();
+  }, []);
+
+  const canvasStyle = {
+    border: '0'
+  };
+
   const [strokeColor, setColor] = useState("black");
   const canvas = useRef(null);
   const upload_canvas = async () => {
@@ -38,8 +68,18 @@ export default function Home() {
 
   return (
     <>
+      <nav>
+        <div class="max-w-screen-xl flex flex-row-reverse flex-wrap items-center justify-between mx-auto p-1">
+          <ul class="font-medium flex-row-reverse flex-col p-1 mt-4">
+            { !isLoggedIn ? (<li><a href="/auth" class="block text-gray-900 hover:text-gray-500 bg-transparent">Login</a></li>):(<span></span>)}
+            { isStudent&&isLoggedIn ? (<li><a href="/student/dashboard" class="block text-gray-900 hover:text-gray-500 bg-transparent">Dashboard</a></li>):(<span></span>)}
+            { !isStudent&&isLoggedIn ? (<a href="/teacher/dashboard" class="block text-gray-900 hover:text-gray-500 bg-transparent">Dashboard</a>) : (<span></span>)}
+          </ul>
+        </div>
+      </nav>
       <div className="h-full w-full absolute mt-0 z-50">
          <ReactSketchCanvas
+          style={canvasStyle}
           strokeWidth={4}
           strokeColor={strokeColor}
           ref={canvas}
