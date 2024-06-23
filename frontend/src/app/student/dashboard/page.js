@@ -3,7 +3,6 @@ import Image from "next/image";
 import { useEffect, useState, useRef } from 'react'
 
 export default function Home() {
-  const [isStudent, makeStudent] = useState(true);
   const [assignments, updateAssignments] = useState([])
   const [trynaUpload, meUpload] = useState(false);
   const [assignmentInQuestion, theAssignmentInQuesstionIs] = useState("");
@@ -27,6 +26,7 @@ export default function Home() {
           if (submission.assignment_id==assignment._id) {
             assignment['submission'] = submission._id;
             assignment['submittedAt'] = submission.createdAt;
+            assignment['correct'] = submission.correct;
           }
         }
       }
@@ -34,6 +34,22 @@ export default function Home() {
     }
     getSubmissions();
   }, [])
+
+  const handleSubmit = async(e) => {
+    console.log(e.target.files[0]);
+    console.log(assignmentInQuestion);
+    const fd = new FormData();
+    fd.append('file', e.target.files[0]);
+    let res = fetch(`http://localhost:3000/api/upload/${assignmentInQuestion}`, {
+      method:"POST",
+      body:fd,
+      credentials:'include',
+    });
+    meUpload(false);
+    for (const ass of assignments) {
+      if (ass._id==assignmentInQuestion) ass.submission = true;
+    }
+  }
 
   return (
     <>
@@ -51,7 +67,7 @@ export default function Home() {
                           <p class="mb-2 text-sm text-gray-500 "><span class="font-semibold">Click to upload</span> or drag and drop</p>
                           <p class="text-xs text-gray-500 ">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
                       </div>
-                      <input id="dropzone-file" type="file" class="hidden" />
+                      <input id="dropzone-file" type="file" class="hidden" onChange={(e) => handleSubmit(e)}/>
                   </label>
               </div> 
 
@@ -93,7 +109,7 @@ export default function Home() {
                                 {assignment.name}
                               </th>
                               <td class="px-6 py-4">
-                                {assignment.submitted ? (assignment.correct?"100%":"70%") : "N/A"}
+                                {assignment.submission ? (assignment.correct?"100%":"70%") : "N/A"}
                               </td>
                               <td class="px-6 py-4">
                                 {assignment.submittedAt || "N/A"}
