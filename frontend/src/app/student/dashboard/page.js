@@ -11,9 +11,26 @@ export default function Home() {
 
   useEffect(() => {
     const getSubmissions = async() => {
-      const result = await fetch("http://localhost:3000/api/submissions/yours", {credentials: 'include'});
+      const url = "http://localhost:3000/api/login";
+      const response = await fetch(url, {method: "GET", credentials: "include"});
+      const res = await response.json();
+      if (!("userID" in res)) {
+        window.location.href = "/auth";
+        return;
+      }
+      const result = await fetch("http://localhost:3000/api/getAssignments", {credentials: 'include'});
       const data = await result.json();
       console.log(data);
+      const mySubmissionsResult = await fetch("http://localhost:3000/api/submissions/yours", {credentials: 'include'});
+      const mySubmissions = await mySubmissionsResult.json();
+      for (const submission of mySubmissions) {
+        for (const assignment of data) {
+          if (submission.assignment_id==assignment._id) {
+            assignment['submission'] = submission._id;
+            assignment['submittedAt'] = submission.createdAt;
+          }
+        }
+      }
       updateAssignments(data);
     }
     getSubmissions();
@@ -71,22 +88,26 @@ export default function Home() {
                     </thead>
                     <tbody>
                       {
-                        (assignments.map((submission, index) => (
+                        (assignments.map((assignment, index) => (
                           <tr class="bg-white border-b hover:bg-gray-50">
                               <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap ">
-                                {submission.assignment_name}
+                                {assignment.name}
                               </th>
                               <td class="px-6 py-4">
-                                {submission.correct?"100%":"70%"}
+                                {assignment.submitted ? (assignment.correct?"100%":"70%") : "N/A"}
                               </td>
                               <td class="px-6 py-4">
-                                {submission.createdAt}
+                                {assignment.submittedAt || "N/A"}
                               </td>
                               <td class="flex items-center px-6 py-4">
-                                  <a href="#" class="font-medium text-center text-cyan-500 hover:underline ms-3" onClick={()=>{
-                                    theAssignmentInQuesstionIs(submission.assignment_id);
-                                    meUpload(true);
-                                  }}>Submit</a>
+                                  <a href="#" class="font-medium text-center text-cyan-500 hover:underline ms-3" 
+                                    onClick={()=>{
+                                      if (!assignment.submission) {
+                                        theAssignmentInQuesstionIs(assignment._id);
+                                        meUpload(true);
+                                      }
+                                      else window.location.href = `/review/${assignment.submission}`
+                                  }}>{assignment.submission ? "View" : "Submit"}</a>
                               </td>
                           </tr>
                         )))
