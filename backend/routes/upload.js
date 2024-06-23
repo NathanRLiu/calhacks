@@ -3,6 +3,9 @@ const router = express.Router();
 const multer = require("multer");
 const path = require("path");
 const fs = require('fs');
+const Submission = require('../models/submissionModel');
+const Assignment = require("../models/assignmentModel");
+const { default: mongoose } = require("mongoose");
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -51,13 +54,28 @@ const handleMatrix = (latex, out, promises) => {
             // console.log(result);
             // console.log(result.queryresult.pods);
             const solution = result.queryresult.pods.find((element) => element.title=="Result");
-            out.push({"step": index, "rref": solution.subpods[0].plaintext});
+            out.push({"step": index, "solution": solution.subpods[0].plaintext});
         })
         promises.push(promise);
     }
 }
 
-router.post("/", upload.single("file"), async (req, res) => {
+router.post("/:assignmentID?", upload.single("file"), async (req, res) => {
+    let assignmentDocument;
+    if (req.params.assignmentID) {
+        if (!req.session.userID) {
+            res.send({"error": "Please log in to submit to assignments."});
+            return;
+        }
+        if (!mongoose.isValidObjectId(req.params.assignmentID)) {
+            res.send({"error": "invalid assignment id"});
+            return;
+        }
+        assignmentDocument = await Assignment.findOne({"_id": req.params.assignmentID});
+        if (!assignmentDocument) {
+            res.send({"error": "Assignment does not exist."});
+        }
+    }
     const filePath = path.join(__dirname, '../uploads', req.file.filename);
     console.log(filePath);
     const blob = await fs.openAsBlob(filePath);
@@ -82,6 +100,21 @@ router.post("/", upload.single("file"), async (req, res) => {
             handleAlgebra(result.res.latex, out, promises);
         }
         await Promise.all(promises);
+        let correct = true;
+        for (const step of out) {
+            if (step.solution!=assignmentDocument.answer) correct = false;
+        }
+        if (req.params.assignmentID) {
+            await Submission.create({
+                "file_name": req.file.filename, 
+                "stepChecks": out, 
+                "correct": correct, 
+                "student_name": req.session.username, 
+                "student_id": req.session.userID, 
+                "assignment_name": assignmentDocument.name, 
+                "assignment_id": assignmentDocument._id.toString()
+            });
+        }
         return res.send(out);
     })
     .catch((err) => {
