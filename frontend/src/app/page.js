@@ -1,11 +1,26 @@
 'use client'
 import Image from "next/image";
-import { useEffect, useState, createRef } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { ReactSketchCanvas } from 'react-sketch-canvas';
 
 export default function Home() {
   const [strokeColor, setColor] = useState("black");
-  const canvas = createRef();
+  const canvas = useRef(null);
+  useEffect(() => {
+    const keyDownHandler = (e) => {
+      if (e.code == "KeyE"){
+        canvas.current.eraseMode(true);
+      }else if (e.code == "KeyB"){
+        canvas.current.eraseMode(false);
+      }
+    };
+    document.addEventListener("keydown", keyDownHandler);
+
+    // clean up
+    return () => {
+      document.removeEventListener("keydown", keyDownHandler);
+    };
+  }, []);
 
   return (
     <>
@@ -13,6 +28,7 @@ export default function Home() {
          <ReactSketchCanvas
           strokeWidth={4}
           strokeColor={strokeColor}
+          ref={canvas}
           canvasColor="transparent"
         />       
       </div>
