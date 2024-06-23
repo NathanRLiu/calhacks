@@ -40,4 +40,15 @@ router.get("/all", async(req, res) => {
     return;
 })
 
+router.get("/yours", async(req, res) => {
+    if (!req.session.username) {
+        res.send({"error": "not logged in"});
+        return;
+    }
+    const results = await Submission.find({"student_name": req.session.username});
+    console.log(results);
+    res.send(results);
+    return;
+})
+
 module.exports = router;

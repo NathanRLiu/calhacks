@@ -5,28 +5,20 @@ import { ReactSketchCanvas } from 'react-sketch-canvas';
 
 export default function Home() {
   const [isStudent, makeStudent] = useState(true);
-  const [assignments, updateAssignments] = useState([
-    {
-      "latest_submission_id":"39ff9ed116c3",
-      "created_at":Date.now,
-      "file_name":"blah.png",
-      "correct":true,
-      "student_name":"Nate",
-      "assignment_title":"Hw #1",
-      "assignment_id":"39ff9ed116c3"
-    },
-    {
-      "latest_submission_id":"93ffc3ee83ba",
-      "created_at":Date.now,
-      "file_name":"blah2.png",
-      "correct":false,
-      "student_name":"Nate",
-      "assignment_title":"Hw #2",
-      "assignment_id":"93ffc3ee83ba"
-    } 
-  ])
+  const [assignments, updateAssignments] = useState([])
   const [trynaUpload, meUpload] = useState(false);
   const [assignmentInQuestion, theAssignmentInQuesstionIs] = useState("");
+
+  useEffect(() => {
+    const getSubmissions = async() => {
+      const result = await fetch("http://localhost:3000/api/submissions/yours", {credentials: 'include'});
+      const data = await result.json();
+      console.log(data);
+      updateAssignments(data);
+    }
+    getSubmissions();
+  }, [])
+
   return (
     <>
       {
@@ -82,13 +74,13 @@ export default function Home() {
                         (assignments.map((submission, index) => (
                           <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                               <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                {submission.assignment_title}
+                                {submission.assignment_name}
                               </th>
                               <td class="px-6 py-4">
                                 {submission.correct?"100%":"70%"}
                               </td>
                               <td class="px-6 py-4">
-                                {submission.created_at}
+                                {submission.createdAt}
                               </td>
                               <td class="flex items-center px-6 py-4">
                                   <a href="#" class="font-medium text-center text-cyan-500 dark:text-blue-500 hover:underline ms-3" onClick={()=>{
