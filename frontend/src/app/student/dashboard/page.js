@@ -5,28 +5,20 @@ import { ReactSketchCanvas } from 'react-sketch-canvas';
 
 export default function Home() {
   const [isStudent, makeStudent] = useState(true);
-  const [assignments, updateAssignments] = useState([
-    {
-      "latest_submission_id":"39ff9ed116c3",
-      "created_at":Date.now,
-      "file_name":"blah.png",
-      "correct":true,
-      "student_name":"Nate",
-      "assignment_title":"Hw #1",
-      "assignment_id":"39ff9ed116c3"
-    },
-    {
-      "latest_submission_id":"93ffc3ee83ba",
-      "created_at":Date.now,
-      "file_name":"blah2.png",
-      "correct":false,
-      "student_name":"Nate",
-      "assignment_title":"Hw #2",
-      "assignment_id":"93ffc3ee83ba"
-    } 
-  ])
+  const [assignments, updateAssignments] = useState([])
   const [trynaUpload, meUpload] = useState(false);
   const [assignmentInQuestion, theAssignmentInQuesstionIs] = useState("");
+
+  useEffect(() => {
+    const getSubmissions = async() => {
+      const result = await fetch("http://localhost:3000/api/submissions/yours", {credentials: 'include'});
+      const data = await result.json();
+      console.log(data);
+      updateAssignments(data);
+    }
+    getSubmissions();
+  }, [])
+
   return (
     <>
       {
@@ -35,13 +27,13 @@ export default function Home() {
             <div className="bg-white p-6 text-center w-1/3 m-auto rounded-md pointer-events-auto">
 
               <div class="flex items-center justify-center w-full">
-                  <label for="dropzone-file" class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
+                  <label for="dropzone-file" class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
                       <div class="flex flex-col items-center justify-center pt-5 pb-6">
-                          <svg class="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
+                          <svg class="w-8 h-8 mb-4 text-gray-500 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
                               <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
                           </svg>
-                          <p class="mb-2 text-sm text-gray-500 dark:text-gray-400"><span class="font-semibold">Click to upload</span> or drag and drop</p>
-                          <p class="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
+                          <p class="mb-2 text-sm text-gray-500 "><span class="font-semibold">Click to upload</span> or drag and drop</p>
+                          <p class="text-xs text-gray-500 ">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
                       </div>
                       <input id="dropzone-file" type="file" class="hidden" />
                   </label>
@@ -60,8 +52,8 @@ export default function Home() {
         <div className="bg-gray-100 absolute w-5/6 h-2/3 p-6 px-0 rounded-md ">
           <h1 className="text-gray-700 text-left font-semibold ml-6 mb-6 text-black text-3xl">Student Dashboard </h1>
             <div class="relative overflow-x-auto sm:rounded-lg">
-                <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                    <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                <table class="w-full text-sm text-left rtl:text-right text-gray-500 ">
+                    <thead class="text-xs text-gray-700 uppercase bg-gray-50 ">
                         <tr>
                             <th scope="col" class="px-6 py-4">
                               Assignment Title
@@ -80,18 +72,18 @@ export default function Home() {
                     <tbody>
                       {
                         (assignments.map((submission, index) => (
-                          <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                              <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                                {submission.assignment_title}
+                          <tr class="bg-white border-b hover:bg-gray-50">
+                              <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap ">
+                                {submission.assignment_name}
                               </th>
                               <td class="px-6 py-4">
                                 {submission.correct?"100%":"70%"}
                               </td>
                               <td class="px-6 py-4">
-                                {submission.created_at}
+                                {submission.createdAt}
                               </td>
                               <td class="flex items-center px-6 py-4">
-                                  <a href="#" class="font-medium text-center text-cyan-500 dark:text-blue-500 hover:underline ms-3" onClick={()=>{
+                                  <a href="#" class="font-medium text-center text-cyan-500 hover:underline ms-3" onClick={()=>{
                                     theAssignmentInQuesstionIs(submission.assignment_id);
                                     meUpload(true);
                                   }}>Submit</a>
