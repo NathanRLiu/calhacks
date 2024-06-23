@@ -76,7 +76,21 @@ router.post("/:assignmentID?", upload.single("file"), async (req, res) => {
             res.send({"error": "Assignment does not exist."});
         }
     }
-    const filePath = path.join(__dirname, '../uploads', req.file.filename);
+    let fileName;
+    if (req.body.uri) {
+        // sent uri instead of file
+        console.log(req.body.file);
+        const base64Data = req.body.file.replace(/^data:image\/\w+;base64,/, '');
+        const binaryData = Buffer.from(base64Data, 'base64');
+        fileName = "Canvas "+Date.now()+".png";
+        const filePath = path.join(__dirname, "../uploads", fileName);
+        fs.writeFileSync(filePath, binaryData, err => {
+           console.log("wrote to file");
+        });
+    }
+    else fileName = req.file.filename;
+
+    const filePath = path.join(__dirname, '../uploads', fileName);
     console.log(filePath);
     const blob = await fs.openAsBlob(filePath);
     const formData = new FormData();
@@ -100,11 +114,12 @@ router.post("/:assignmentID?", upload.single("file"), async (req, res) => {
             handleAlgebra(result.res.latex, out, promises);
         }
         await Promise.all(promises);
-        let correct = true;
-        for (const step of out) {
-            if (step.solution!=assignmentDocument.answer) correct = false;
-        }
+        
         if (req.params.assignmentID) {
+            let correct = true;
+            for (const step of out) {
+                if (step.solution!=assignmentDocument.answer) correct = false;
+            }
             await Submission.create({
                 "file_name": req.file.filename, 
                 "stepChecks": out, 

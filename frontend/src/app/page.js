@@ -7,15 +7,17 @@ export default function Home() {
   const [strokeColor, setColor] = useState("black");
   const canvas = useRef(null);
   const upload_canvas = async () => {
-          let imageUri = await canvas.current.exportImage("jpg");
-          let img = new FormData();
-          img.append('file', { uri: imageUri });
-          fetch("http://localhost:3000/api/upload", {
-            method:"POST",
-            body:img,
-            credentials:'include',
-          });
-        }
+    let imageUri = await canvas.current.exportImage("jpg");
+    let img = new FormData();
+    img.append('file', imageUri );
+    img.append('uri', true);
+    console.log(imageUri);
+    fetch("http://localhost:3000/api/upload", {
+      method:"POST",
+      body:img,
+      credentials:'include',
+    });
+  }
   useEffect(() => {
     const keyDownHandler = (e) => {
       if (e.code == "KeyE"){
