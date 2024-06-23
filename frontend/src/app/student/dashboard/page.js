@@ -1,7 +1,6 @@
 'use client'
 import Image from "next/image";
 import { useEffect, useState, useRef } from 'react'
-import { ReactSketchCanvas } from 'react-sketch-canvas';
 
 export default function Home() {
   const [isStudent, makeStudent] = useState(true);
@@ -115,9 +114,8 @@ export default function Home() {
                     </tbody>
                 </table>
             </div>
-          <div>
-            <div class="mt-3 mx-0.5 w-full">
-            </div>
+          <div class="flex">
+            <a type="button" href="/" class="flex align-bottom w-full justify-center rounded-md bg-blue-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600">Return to Whiteboard</a>
           </div>
         </div>
       </main>
