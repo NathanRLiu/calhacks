@@ -32,9 +32,14 @@ app.post("/upload", upload.single("file"), async (req, res) => {
     })
     .then(async(results) => {
         const result = await results.json();
-        console.log(result);
-        res.send(result);
-        return;
+        console.log(encodeURIComponent(result.res.latex));
+        fetch(`http://api.wolframalpha.com/v2/query?appid=8KJERX-4X9LWJK2QL&input=${encodeURIComponent(result.res.latex)}&output=json`)
+        .then(async(resp) => {
+            const result = await resp.json();
+
+            console.log(result.queryresult.pods);
+            return res.send(result.queryresult.pods);
+        })
     })
     .catch((err) => {
         console.log(err);
