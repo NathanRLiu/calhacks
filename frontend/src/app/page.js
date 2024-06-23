@@ -12,6 +12,15 @@ export default function Home() {
         canvas.current.eraseMode(true);
       }else if (e.code == "KeyB"){
         canvas.current.eraseMode(false);
+      }else if (e.code == "KeyC"){
+        const img = canvas.current.exportImage("jpg");
+        let f = new FormData();
+        f.append("file", img);
+        fetch("https://localhost:8000/", {
+          method:"POST",
+          body:""
+        });
+
       }
     };
     document.addEventListener("keydown", keyDownHandler);
