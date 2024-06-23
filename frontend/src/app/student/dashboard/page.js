@@ -58,7 +58,7 @@ export default function Home() {
       <div className="bg-gradient-to-b w-screen -z-10 h-screen fixed from-gray-300 to-gray-200" />
       <main className=" p-24 z-10 text-black w-screen h-screen flex flex-col items-center">
         <div className="bg-gray-100 absolute w-5/6 h-2/3 p-6 px-0 rounded-md ">
-          <h1 className="text-gray-700 text-left font-semibold ml-6 mb-6 text-black text-3xl">{isStudent?"Student":"Teacher"} Dashboard </h1>
+          <h1 className="text-gray-700 text-left font-semibold ml-6 mb-6 text-black text-3xl">Student Dashboard </h1>
             <div class="relative overflow-x-auto sm:rounded-lg">
                 <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                     <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
