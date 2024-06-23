@@ -44,7 +44,8 @@ app.post("/upload", upload.single("file"), async (req, res) => {
     })
     .then(async(results) => {
         const result = await results.json();
-        const lines = encodeURIComponent(result.res.latex).split("\\\\");
+        console.log(result.res.latex);
+        const lines = encodeURIComponent(result.res.latex).split("%5C%5C");
         let out = [];
         let promises = [];
         console.log(lines);
