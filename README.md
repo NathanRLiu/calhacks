@@ -1,1 +1,2 @@
-# calhacks
+# AutoMathic
+Our website is a digital notebook which checks students' mathematical work line by line, letting them know when they make a mistake. We help students unlearn bad habits by immediately delivering feedback, without giving them too much assistance. Automathic prefers to take a backseat and let the student handle most of the work, while making sure that they stay on the right track. We also created an automatic assignment feedback system where students can submit their homework assignments and receive feedback on it before they go to the instructor's office hours.
